@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile.app
+    environment:
+      DBUSER: root
+      DBPASS_FILE: /run/secrets/db_password
+      DBNAME: recordings
+    secrets:
+      - db_password
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+  
+  migrations:
+    build:
+      dockerfile: Dockerfile.migrations
+    environment:
+      DBUSER: root
+      DBPASS_FILE: /run/secrets/db_password
+    volumes:
+      - ./migrations:/migrations
+    secrets:
+      - db_password
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0.41-debian # there is no alpine images available
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_DATABASE: recordings
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    secrets:
+      - db_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
+secrets:
+  db_password:
+    file: db_password
