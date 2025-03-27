@@ -18,6 +18,7 @@ services:
     environment:
       DBUSER: root
       DBPASS_FILE: /run/secrets/db_password
+      DBNAME: recordings
     volumes:
       - ./migrations:/migrations
     secrets:

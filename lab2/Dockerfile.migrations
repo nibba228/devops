@@ -1,3 +1,3 @@
 FROM migrate/migrate
 
-ENTRYPOINT migrate -path /migrations -database "mysql://$DBUSER:$(cat $DBPASS_FILE)@tcp(db)/recordings" up
+ENTRYPOINT migrate -path /migrations -database "mysql://$DBUSER:$(cat $DBPASS_FILE)@tcp(db)/$DBNAME" up
