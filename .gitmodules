@@ -1,0 +1,3 @@
+[submodule "lab4/go-todo"]
+	path = lab4/go-todo
+	url = git@github.com:ichtrojan/go-todo.git
